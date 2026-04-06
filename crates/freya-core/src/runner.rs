@@ -548,7 +548,7 @@ impl Runner {
     #[cfg_attr(feature = "hotpath", hotpath::measure)]
     pub async fn handle_events(&mut self) {
         loop {
-            while let Ok(msg) = self.receiver.try_recv() {
+            while let Ok(Some(msg)) = self.receiver.try_next() {
                 match msg {
                     Message::MarkScopeAsDirty(scope_id) => {
                         self.dirty_scopes.insert(scope_id);
@@ -614,7 +614,7 @@ impl Runner {
     /// Useful for freya-testing
     #[cfg_attr(feature = "hotpath", hotpath::measure)]
     pub fn handle_events_immediately(&mut self) {
-        while let Ok(msg) = self.receiver.try_recv() {
+        while let Ok(Some(msg)) = self.receiver.try_next() {
             match msg {
                 Message::MarkScopeAsDirty(scope_id) => {
                     self.dirty_scopes.insert(scope_id);

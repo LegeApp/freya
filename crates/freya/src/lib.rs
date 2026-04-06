@@ -187,6 +187,7 @@ pub mod components {
         },
         image_viewer::*,
         input::*,
+        lege_modal::*,
         loader::*,
         menu::*,
         overflowed_content::*,

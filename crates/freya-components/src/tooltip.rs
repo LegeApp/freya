@@ -13,6 +13,7 @@ use freya_animation::{
     prelude::AnimNum,
 };
 use freya_core::prelude::*;
+use torin::size::Size;
 
 use crate::{
     attached::{
@@ -93,7 +94,8 @@ impl Component for Tooltip {
 
         rect()
             .interactive(Interactive::No)
-            .padding((4., 10.))
+            .width(Size::px(236.))
+            .padding((5., 8.))
             .border(
                 Border::new()
                     .width(1.)
@@ -104,7 +106,7 @@ impl Component for Tooltip {
             .corner_radius(8.)
             .child(
                 label()
-                    .max_lines(1)
+                    .max_lines(5)
                     .font_size(font_size)
                     .color(color)
                     .text(self.text.clone()),
