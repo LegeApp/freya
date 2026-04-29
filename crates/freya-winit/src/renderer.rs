@@ -862,7 +862,33 @@ impl ApplicationHandler<NativeEvent> for WinitRenderer {
                     });
                 }
                 WindowEvent::Resized(size) => {
-                    app.driver.resize(size);
+                    let mut resolved = size;
+                    if let Some((min_ratio, max_ratio)) = app.aspect_ratio_range {
+                        let scale = app.window.scale_factor();
+                        let logical_w = size.width as f64 / scale;
+                        let logical_h = size.height as f64 / scale;
+                        if logical_h > 0.0 {
+                            let ratio = logical_w / logical_h;
+                            let target_ratio = if ratio < min_ratio {
+                                Some(min_ratio)
+                            } else if ratio > max_ratio {
+                                Some(max_ratio)
+                            } else {
+                                None
+                            };
+                            if let Some(target) = target_ratio {
+                                let new_logical_h = logical_w / target;
+                                let requested = LogicalSize::<f64>::new(logical_w, new_logical_h);
+                                if let Some(new_size) =
+                                    app.window.request_inner_size(requested)
+                                {
+                                    resolved = new_size;
+                                }
+                            }
+                        }
+                    }
+
+                    app.driver.resize(resolved);
 
                     app.window.request_redraw();
 

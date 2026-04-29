@@ -58,6 +58,8 @@ pub struct WindowConfig {
     pub(crate) min_size: Option<(f64, f64)>,
     /// Maximum size of the Window.
     pub(crate) max_size: Option<(f64, f64)>,
+    /// Inclusive [min, max] aspect ratio (width / height) clamped on resize.
+    pub(crate) aspect_ratio_range: Option<(f64, f64)>,
     /// Enable Window decorations.
     pub(crate) decorations: bool,
     /// Title for the Window.
@@ -114,6 +116,7 @@ impl WindowConfig {
             size: (700.0, 500.0),
             min_size: None,
             max_size: None,
+            aspect_ratio_range: None,
             decorations: true,
             title: "Freya",
             transparent: false,
@@ -142,6 +145,15 @@ impl WindowConfig {
     /// Specify a maximum Window size.
     pub fn with_max_size(mut self, max_width: f64, max_height: f64) -> Self {
         self.max_size = Some((max_width, max_height));
+        self
+    }
+
+    /// Constrain the inner size to an inclusive aspect ratio range (width / height).
+    /// On resize, if the ratio falls outside `[min_ratio, max_ratio]`, the height
+    /// is adjusted to bring the ratio back into range.
+    pub fn with_aspect_ratio_range(mut self, min_ratio: f64, max_ratio: f64) -> Self {
+        debug_assert!(min_ratio > 0.0 && max_ratio >= min_ratio);
+        self.aspect_ratio_range = Some((min_ratio, max_ratio));
         self
     }
 

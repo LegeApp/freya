@@ -20,6 +20,15 @@ pub struct PositionSides {
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum PositionCorner {
+    TopLeft,
+    TopRight,
+    BottomLeft,
+    BottomRight,
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[derive(PartialEq, Clone, Debug)]
 pub enum Position {
     Stacked(Box<PositionSides>),
@@ -60,6 +69,17 @@ impl Position {
             bottom: None,
             left: None,
         }))
+    }
+
+    /// Anchor an absolutely-positioned element to a corner of its parent with a uniform inset.
+    /// Equivalent to `Position::new_absolute().{top|bottom}(inset).{left|right}(inset)`.
+    pub fn corner(corner: PositionCorner, inset: f32) -> Self {
+        match corner {
+            PositionCorner::TopLeft => Self::new_absolute().top(inset).left(inset),
+            PositionCorner::TopRight => Self::new_absolute().top(inset).right(inset),
+            PositionCorner::BottomLeft => Self::new_absolute().bottom(inset).left(inset),
+            PositionCorner::BottomRight => Self::new_absolute().bottom(inset).right(inset),
+        }
     }
 
     #[must_use]

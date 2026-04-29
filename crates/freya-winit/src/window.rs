@@ -106,6 +106,8 @@ pub struct AppWindow {
     pub(crate) on_close: Option<OnCloseHook>,
 
     pub(crate) window_attributes: WindowAttributes,
+
+    pub(crate) aspect_ratio_range: Option<(f64, f64)>,
 }
 
 impl AppWindow {
@@ -333,6 +335,8 @@ impl AppWindow {
             on_close,
 
             window_attributes,
+
+            aspect_ratio_range: window_config.aspect_ratio_range,
         }
     }
 
